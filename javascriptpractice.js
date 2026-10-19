@@ -22,3 +22,4 @@ nameElement.addEventListener("click", function () {
     var randomIndex = Math.floor(Math.random() * color.length);
     nameElement.style.color = color[randomIndex];
 });
+

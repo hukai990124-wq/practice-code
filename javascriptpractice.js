@@ -15,3 +15,10 @@ document.getElementById("profile").innerHTML =
     "<h1>" + profile.name + "</h1>" +
     '<p class="intro">' + profile.intro + "</p>" +
     "<dl>" + detailsHtml + "</dl>";
+var nameElement = document.querySelector("h1");
+
+nameElement.addEventListener("click", function () {
+    var color = ["red", "orange", "purple"];
+    var randomIndex = Math.floor(Math.random() * color.length);
+    nameElement.style.color = color[randomIndex];
+});

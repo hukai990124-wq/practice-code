@@ -51,7 +51,16 @@
         .contact-author-dialog__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
         .contact-author-dialog h2 { margin: 0; font-size: 1.2rem; }
         .contact-author-dialog p { margin: 18px 0 8px; color: var(--muted); }
-        .contact-author-dialog a { color: var(--accent); overflow-wrap: anywhere; }
+        .contact-author-dialog a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent);
+            overflow-wrap: anywhere;
+        }
+
+        /* 联系方式图标：统一两个内嵌 SVG 的尺寸和文字颜色。 */
+        .contact-author-icon { width: 18px; height: 18px; flex: 0 0 auto; }
 
         .contact-author-dialog__close {
             width: 34px;

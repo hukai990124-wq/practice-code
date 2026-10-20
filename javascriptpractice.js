@@ -270,89 +270,22 @@ petSelect.addEventListener("change", function () {
     petMessage.textContent = selectedPetName + " is ready to meet you.";
 });
 
-// 点击喂食时用 Web Audio 实时合成声音，不需要额外音频文件。
+// 用项目里的真实龙吼音频替代 Web Audio 合成音；src 路径相对于 practice.html。
+var dragonRoar = document.getElementById("dragon-roar");
+dragonRoar.volume = 0.8;
+
 feedButton.addEventListener("click", function () {
-    var AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextClass) {
-        petMessage.textContent = "Your browser not support the voice";
-        return;
-    }
+    // 重复点击时从头播放，避免多段龙吼叠在一起。
+    dragonRoar.pause();
+    dragonRoar.currentTime = 0;
 
-    audioContext = audioContext || new AudioContextClass();
-    audioContext.resume();
-
-    var now = audioContext.currentTime;
-    var duration = 2.4;
-    // master 是总音量节点，所有合成声部接入这里后再输出到扬声器。
-    var master = audioContext.createGain();
-    master.gain.setValueAtTime(0.0001, now);
-    master.gain.exponentialRampToValueAtTime(0.32, now + 0.12);
-    master.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-    master.connect(audioContext.destination);
-
-    // 低沉下滑的锯齿波经过低通滤波，构成吼声的低频主体。
-    // 声音由低频吼声、高频嘶声和滤波噪声三层叠加而成。
-    var growl = audioContext.createOscillator();
-    var growlGain = audioContext.createGain();
-    var growlFilter = audioContext.createBiquadFilter();
-    growl.type = "sawtooth";
-    growl.frequency.setValueAtTime(210, now);
-    growl.frequency.exponentialRampToValueAtTime(85, now + duration);
-    growlFilter.type = "lowpass";
-    growlFilter.frequency.setValueAtTime(1100, now);
-    growlFilter.frequency.exponentialRampToValueAtTime(420, now + duration);
-    growlGain.gain.setValueAtTime(0.42, now);
-    growlGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-    growl.connect(growlFilter);
-    growlFilter.connect(growlGain);
-    growlGain.connect(master);
-    growl.start(now);
-    growl.stop(now + duration);
-
-    // 三角波经过带通滤波后叠在主体上，形成更尖锐的高频嘶吼。
-    var shriek = audioContext.createOscillator();
-    var shriekFilter = audioContext.createBiquadFilter();
-    var shriekGain = audioContext.createGain();
-    shriek.type = "triangle";
-    shriek.frequency.setValueAtTime(720, now + 0.08);
-    shriek.frequency.exponentialRampToValueAtTime(260, now + duration);
-    shriekFilter.type = "bandpass";
-    shriekFilter.frequency.setValueAtTime(1500, now);
-    shriekFilter.frequency.exponentialRampToValueAtTime(700, now + duration);
-    shriekFilter.Q.value = 1.4;
-    shriekGain.gain.setValueAtTime(0.0001, now);
-    shriekGain.gain.exponentialRampToValueAtTime(0.2, now + 0.18);
-    shriekGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-    shriek.connect(shriekFilter);
-    shriekFilter.connect(shriekGain);
-    shriekGain.connect(master);
-    shriek.start(now);
-    shriek.stop(now + duration);
-
-    // 创建短噪声并滤波，补充粗糙气声；降低增益让声音自然结束。
-    var bufferSize = Math.floor(audioContext.sampleRate * duration);
-    var noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
-    var noiseData = noiseBuffer.getChannelData(0);
-    for (var i = 0; i < bufferSize; i++) {
-        noiseData[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
-    }
-    var noise = audioContext.createBufferSource();
-    var noiseFilter = audioContext.createBiquadFilter();
-    var noiseGain = audioContext.createGain();
-    noise.buffer = noiseBuffer;
-    noiseFilter.type = "bandpass";
-    noiseFilter.frequency.setValueAtTime(1400, now);
-    noiseFilter.frequency.exponentialRampToValueAtTime(650, now + duration);
-    noiseFilter.Q.value = 0.8;
-    noiseGain.gain.setValueAtTime(0.14, now);
-    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-    noise.connect(noiseFilter);
-    noiseFilter.connect(noiseGain);
-    noiseGain.connect(master);
-    noise.start(now);
-    noise.stop(now + duration);
-
-    petMessage.textContent = selectedPetName + " is happy now! 🐉";
+    // 浏览器要求音频由用户操作触发；播放失败时给出可见提示。
+    dragonRoar.play().then(function () {
+        petMessage.textContent = selectedPetName + " is happy now! 🐉";
+    }).catch(function (error) {
+        console.error("龙吼音频播放失败：", error);
+        petMessage.textContent = "Could not play the roar. Please check the audio file.";
+    });
 });
 
 // 11. 每帧重新绘制场景；requestAnimationFrame 跟随浏览器刷新节奏运行。

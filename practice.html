@@ -44,8 +44,10 @@
             <!-- Three.js 会把 WebGL 画布插入这个容器。 -->
             <div id="pet"></div>
             <p class="interaction-hint">Drag to rotate · Right-drag to move · Scroll to zoom</p>
-            <!-- 喂食按钮触发合成音效，状态文字通过 aria-live 通知辅助技术。 -->
+            <!-- 喂食按钮播放项目中的龙吼音频；状态文字通过 aria-live 通知辅助技术。 -->
             <div class="pet-footer">
+                <!-- 音频文件与网页放在同一目录，便于静态托管一起发布。 -->
+                <audio id="dragon-roar" src="./dragon-studio-epic-dragon-roar-364481.mp3" preload="auto"></audio>
                 <button id="feed" type="button">Feed Draco</button>
                 <p id="pet-message" aria-live="polite">Draco is ready to meet you.</p>
             </div>

@@ -75,7 +75,7 @@ scene.add(ambientLight);
 var dragon;
 
 loader.load(
-    "./HuKai.blackdragon.glb",
+    "./blakcdragon.glb",
 
     function (gltf) {
         dragon = gltf.scene;

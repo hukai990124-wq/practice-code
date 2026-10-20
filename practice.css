@@ -1,3 +1,4 @@
+/* 全站颜色变量：调整这些值可以统一改变页面主题。 */
 :root {
             color-scheme: dark;
             --page: #0a0f14;
@@ -11,6 +12,7 @@
 
         * { box-sizing: border-box; }
 
+        /* 页面底色、默认文字和基础字体。 */
         body {
             min-height: 100vh;
             margin: 0;
@@ -30,6 +32,7 @@
             box-shadow: 0 18px 50px rgba(0, 0, 0, 0.2);
         }
 
+        /* 宠物标题、选择器和资料在宽屏下横向排列。 */
         .pet-heading {
             display: flex;
             align-items: flex-end;
@@ -52,11 +55,38 @@
             letter-spacing: 0.16em;
         }
 
+        /* 宠物下拉选择器：标签在上，控件在下。 */
+        .pet-selector {
+            display: grid;
+            gap: 6px;
+            color: var(--muted);
+            font-size: 0.75rem;
+        }
+
+        .pet-selector select {
+            min-width: 150px;
+            min-height: 40px;
+            padding: 0 34px 0 12px;
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            color: var(--text);
+            background: #101820;
+            font: inherit;
+            font-size: 0.9rem;
+        }
+
+        .pet-selector select:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        /* 宠物名称和年龄的资料展示。 */
         .pet-details { display: flex; gap: 28px; margin: 0; }
         .pet-details div { display: grid; gap: 4px; }
         .pet-details dt { color: var(--muted); font-size: 0.75rem; }
         .pet-details dd { margin: 0; font-weight: 650; }
 
+        /* 3D 画布容器；JS 会根据它的尺寸创建并调整渲染器。 */
         #pet {
             width: 100%;
             height: min(55vw, 480px);
@@ -76,6 +106,7 @@
 
         .interaction-hint { margin: 10px 0 0; color: var(--muted); font-size: 0.8rem; }
 
+        /* 喂食操作区：按钮和提示信息左右排列。 */
         .pet-footer {
             display: flex;
             align-items: center;
@@ -116,6 +147,7 @@
             letter-spacing: 0.04em;
         }
 
+        /* 纹章与哥特字体座右铭横向排列。 */
         .personal-crest {
             display: flex;
             align-items: center;
@@ -140,6 +172,7 @@
             white-space: nowrap;
         }
 
+        /* 页脚纹章容器负责发光和扫光效果。 */
         .footer-crest {
             position: relative;
             width: 112px;
@@ -180,10 +213,12 @@
             45%, 100% { opacity: 0; transform: translateX(12px); }
         }
 
+        /* 尊重系统的减少动态效果偏好。 */
         @media (prefers-reduced-motion: reduce) {
             .footer-crest img, .footer-crest::after { animation: none; }
         }
 
+        /* 小屏幕下改为纵向排布，并缩小画布和纹章。 */
         @media (max-width: 640px) {
             body { padding: 16px 12px; }
             .page-section { padding: 22px 18px; }

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web Pet · Draco</title>
+    <!-- 加载纹章座右铭使用的哥特字体，并引入本页样式。 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
@@ -21,25 +22,36 @@
 </head>
 <body>
     <main>
+        <!-- 宠物主面板：包含宠物资料、选择控件、3D 画布和喂食操作。 -->
         <section class="page-section pet-section" aria-labelledby="pet-title">
             <div class="pet-heading">
-                <div>
+                <div class="pet-title-group">
                     <p class="pet-kicker">INTERACTIVE COMPANION</p>
                     <h2 id="pet-title">Web Pet</h2>
                 </div>
+                <!-- 目前只有 Draco；新增 option 即可展示更多可选宠物。 -->
+                <label class="pet-selector" for="pet-select">
+                    <span>Choose Pet</span>
+                    <select id="pet-select" name="pet">
+                        <option value="draco" data-age="500" selected>Draco</option>
+                    </select>
+                </label>
                 <dl class="pet-details">
-                    <div><dt>Pet Name</dt><dd>Draco</dd></div>
-                    <div><dt>Age</dt><dd>500</dd></div>
+                    <div><dt>Pet Name</dt><dd id="pet-name">Draco</dd></div>
+                    <div><dt>Age</dt><dd id="pet-age">500</dd></div>
                 </dl>
             </div>
+            <!-- Three.js 会把 WebGL 画布插入这个容器。 -->
             <div id="pet"></div>
             <p class="interaction-hint">Drag to rotate · Right-drag to move · Scroll to zoom</p>
+            <!-- 喂食按钮触发合成音效，状态文字通过 aria-live 通知辅助技术。 -->
             <div class="pet-footer">
                 <button id="feed" type="button">Feed Draco</button>
                 <p id="pet-message" aria-live="polite">Draco is ready to meet you.</p>
             </div>
         </section>
     </main>
+    <!-- 页脚展示个人纹章和纹章座右铭。 -->
     <footer class="site-footer">
         <span>© 2026 @HuKai · 保留所有权利</span>
         <div class="personal-crest">

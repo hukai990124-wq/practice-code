@@ -199,6 +199,44 @@
         #pet-draco:focus-visible { outline: 3px solid white; outline-offset: 3px; }
         #pet-message { margin: 0; color: var(--muted); font-size: 0.9rem; text-align: right; }
 
+        /* Read Text功能：把输入框和朗读控制放在互动按钮下方，沿用页面深色配色。 */
+        .read-text-panel { display: grid; gap: 8px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
+        .read-text-label { color: var(--muted); font-size: 0.85rem; font-weight: 650; }
+        .read-text-language { display: grid; width: min(220px, 100%); gap: 5px; color: var(--muted); font-size: 0.8rem; }
+        .read-text-language select {
+            min-height: 40px;
+            padding: 0 10px;
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            color: var(--text);
+            background: #101820;
+            font: inherit;
+        }
+
+        .read-text-language select:focus-visible { outline: 3px solid white; outline-offset: 2px; }
+        .read-text-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: stretch; gap: 10px; }
+        #draco-text {
+            min-height: 44px;
+            padding: 11px 12px;
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            color: var(--text);
+            background: #101820;
+            font: inherit;
+            resize: vertical;
+        }
+
+        #draco-text:focus-visible,
+        #read-text:focus-visible,
+        #stop-reading:focus-visible { outline: 3px solid white; outline-offset: 2px; }
+        #read-text,
+        #stop-reading { min-height: 44px; padding: 0 16px; border: 1px solid var(--accent); border-radius: 5px; font: inherit; font-weight: 700; cursor: pointer; }
+        #read-text { color: #071411; background: var(--accent); }
+        #read-text:hover { background: var(--accent-strong); }
+        #stop-reading { color: var(--accent-strong); background: #101820; }
+        #stop-reading:hover { background: #1a2a32; }
+        .read-text-note { margin: 0; color: var(--muted); font-size: 0.78rem; }
+
         .site-footer {
             display: flex;
             align-items: center;
@@ -296,6 +334,8 @@
             #pet { height: 68vw; min-height: 280px; }
             .pet-footer { align-items: flex-start; flex-direction: column; }
             #pet-message { text-align: left; }
+            .read-text-controls { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+            #draco-text { grid-column: 1 / -1; }
             .site-footer { gap: 14px; font-size: 0.78rem; }
             .footer-crest { width: 84px; height: 84px; }
             .personal-crest { gap: 0.75rem; }

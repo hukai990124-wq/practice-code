@@ -286,7 +286,84 @@ var petMessage = document.getElementById("pet-message");
 var petSelect = document.getElementById("pet-select");
 var petName = document.getElementById("pet-name");
 var petAge = document.getElementById("pet-age");
+var dracoText = document.getElementById("draco-text");
+var dracoLanguage = document.getElementById("draco-language");
+var readTextButton = document.getElementById("read-text");
+var stopReadingButton = document.getElementById("stop-reading");
 var selectedPetName = petSelect.options[petSelect.selectedIndex].textContent;
+
+// Read Text功能：使用设备提供的 TTS，并以较低音调和较慢语速营造更厚实的龙声。
+var speechSynthesisEngine = window.speechSynthesis;
+var activeSpeechUtterance;
+
+readTextButton.addEventListener("click", function () {
+    var textToRead = dracoText.value.trim();
+    if (!textToRead) {
+        petMessage.textContent = "Enter some text for Draco to read.";
+        dracoText.focus();
+        return;
+    }
+
+    if (!speechSynthesisEngine) {
+        petMessage.textContent = "Text-to-speech is not available in this browser.";
+        return;
+    }
+
+    speechSynthesisEngine.cancel();
+    activeSpeechUtterance = new SpeechSynthesisUtterance(textToRead);
+
+    // 按用户选择的语言匹配设备语音，并优先挑选名称中能识别为男声的语音。
+    var speechLanguage = dracoLanguage.value;
+    var availableVoices = speechSynthesisEngine.getVoices();
+    var languageVoices = availableVoices.filter(function (voice) {
+        return voice.lang.toLowerCase().startsWith(speechLanguage.toLowerCase());
+    });
+    // 若没有地区匹配项，退回同一语言的其他地区声音，例如其他英语口音。
+    if (languageVoices.length === 0) {
+        var baseLanguage = speechLanguage.slice(0, 2).toLowerCase();
+        languageVoices = availableVoices.filter(function (voice) {
+            return voice.lang.toLowerCase().startsWith(baseLanguage);
+        });
+    }
+    var maleVoiceNamePattern = /(^|[\s_-])(david|mark|guy|ryan|christopher|alex|daniel|james|george|oliver|thomas|andrew|keita|otoya|ichiro|hiroshi|takumi|kangkang|yunjian|yunxi|yunyang|male)(?=$|[\s_-])/i;
+    var preferredMaleVoice = languageVoices.find(function (voice) {
+        return voice.localService && maleVoiceNamePattern.test(voice.name);
+    }) || languageVoices.find(function (voice) {
+        return maleVoiceNamePattern.test(voice.name);
+    });
+    var selectedVoice = preferredMaleVoice || languageVoices.find(function (voice) {
+        return voice.localService;
+    });
+    activeSpeechUtterance.voice = selectedVoice || languageVoices[0] || null;
+    activeSpeechUtterance.lang = selectedVoice ? selectedVoice.lang : speechLanguage;
+    activeSpeechUtterance.pitch = 0.58;
+    activeSpeechUtterance.rate = 0.86;
+    activeSpeechUtterance.volume = 1;
+
+    activeSpeechUtterance.onstart = function () {
+        petMessage.textContent = preferredMaleVoice
+            ? "Draco is reading…"
+            : "Draco is reading with an available voice; no recognized male voice was found on this device.";
+    };
+    activeSpeechUtterance.onend = function () {
+        petMessage.textContent = "Draco finished reading.";
+    };
+    activeSpeechUtterance.onerror = function (event) {
+        console.error("Text-to-speech playback failed:", event.error, event.message);
+        if (event.error !== "canceled" && event.error !== "interrupted") {
+            petMessage.textContent = selectedVoice && !selectedVoice.localService
+                ? "The online voice for " + speechLanguage + " failed. Check the connection or install an offline voice for this language."
+                : "Draco could not read that text (" + event.error + "). Check the selected language's voice availability.";
+        }
+    };
+
+    speechSynthesisEngine.speak(activeSpeechUtterance);
+});
+
+stopReadingButton.addEventListener("click", function () {
+    if (speechSynthesisEngine) speechSynthesisEngine.cancel();
+    petMessage.textContent = "Draco stopped reading.";
+});
 
 // Contact Author功能：打开 GitHub 联系弹窗，并支持关闭按钮和点击遮罩关闭。
 var contactAuthorTrigger = document.getElementById("contact-author-trigger");

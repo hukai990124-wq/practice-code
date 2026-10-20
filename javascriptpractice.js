@@ -20,7 +20,7 @@ document.getElementById("profile").innerHTML =
 var nameElement = document.querySelector("h1");
 
 nameElement.addEventListener("click", function () {
-    var color = ["red", "orange", "purple"];
+    var color = ["#76e4d2", "#b7fff1", "#8bb9c7"];
     var randomIndex = Math.floor(Math.random() * color.length);
     nameElement.style.color = color[randomIndex];
 });
@@ -30,16 +30,12 @@ console.log("GLTFLoader initialized", loader);
 
 // 1. 创建3D场景
 var scene = new THREE.Scene();
-scene.background = new THREE.Color(0xdddddd);
+scene.background = new THREE.Color(0xb8d9d5);
+scene.fog = new THREE.Fog(0xb8d9d5, 22, 70);
 
 // 2. 找到HTML中的宠物容器
 var container = document.getElementById("pet");
 container.textContent = "";
-
-// 设置容器尺寸
-container.style.width = "600px";
-container.style.maxWidth = "100%";
-container.style.height = "400px";
 
 // 3. 创建摄像机
 var camera = new THREE.PerspectiveCamera(
@@ -56,6 +52,7 @@ var renderer = new THREE.WebGLRenderer({
     antialias: true
 });
 
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(
     container.clientWidth,
     container.clientHeight
@@ -63,15 +60,110 @@ renderer.setSize(
 
 container.appendChild(renderer.domElement);
 
-// 5. 添加灯光
-var light = new THREE.DirectionalLight(0xffffff, 2);
-light.position.set(5, 5, 5);
+window.addEventListener("resize", function () {
+    var width = container.clientWidth;
+    var height = container.clientHeight;
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+});
+
+// 5. 为原野添加日光与柔和的天空补光
+var light = new THREE.DirectionalLight(0xfff1d2, 2.2);
+light.position.set(-5, 10, 7);
 scene.add(light);
 
-var ambientLight = new THREE.AmbientLight(0xffffff, 1);
+var ambientLight = new THREE.HemisphereLight(0xd9f3ff, 0x50633c, 1.5);
 scene.add(ambientLight);
 
-// 6. 加载你的龙模型
+// 6. 用 Three.js 搭建简洁的草原、远山与树木
+var meadow = new THREE.Group();
+scene.add(meadow);
+
+var groundGeometry = new THREE.PlaneGeometry(100, 100, 48, 48);
+groundGeometry.rotateX(-Math.PI / 2);
+var groundPositions = groundGeometry.attributes.position;
+for (var vertex = 0; vertex < groundPositions.count; vertex++) {
+    var groundX = groundPositions.getX(vertex);
+    var groundZ = groundPositions.getZ(vertex);
+    var gentleRise = Math.sin(groundX * 0.16) * 0.12 + Math.cos(groundZ * 0.13) * 0.1;
+    groundPositions.setY(vertex, -1.65 + gentleRise);
+}
+groundGeometry.computeVertexNormals();
+var ground = new THREE.Mesh(
+    groundGeometry,
+    new THREE.MeshStandardMaterial({ color: 0x4f8b45, roughness: 1, flatShading: true })
+);
+ground.receiveShadow = true;
+meadow.add(ground);
+
+var hillMaterial = new THREE.MeshStandardMaterial({
+    color: 0x47764d,
+    roughness: 1,
+    flatShading: true
+});
+var distantHillMaterial = new THREE.MeshStandardMaterial({
+    color: 0x6e9a67,
+    roughness: 1,
+    flatShading: true
+});
+
+function addHill(x, y, z, scaleX, scaleY, scaleZ, material) {
+    var hill = new THREE.Mesh(new THREE.IcosahedronGeometry(1, 2), material);
+    hill.position.set(x, y, z);
+    hill.scale.set(scaleX, scaleY, scaleZ);
+    meadow.add(hill);
+}
+
+addHill(-16, 1.4, -25, 13, 5, 8, distantHillMaterial);
+addHill(2, 0.6, -29, 17, 4, 9, distantHillMaterial);
+addHill(20, 1.6, -24, 12, 5, 8, distantHillMaterial);
+addHill(-25, 0.1, -15, 10, 3.5, 7, hillMaterial);
+addHill(24, 0.3, -17, 11, 4, 7, hillMaterial);
+
+var trunkMaterial = new THREE.MeshStandardMaterial({ color: 0x65513b, roughness: 1 });
+var canopyMaterials = [
+    new THREE.MeshStandardMaterial({ color: 0x3f6745, roughness: 1, flatShading: true }),
+    new THREE.MeshStandardMaterial({ color: 0x527a4c, roughness: 1, flatShading: true })
+];
+
+function addTree(x, z, size) {
+    var tree = new THREE.Group();
+    tree.position.set(x, -1.5, z);
+
+    var trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.12 * size, 0.2 * size, 1.1 * size, 6), trunkMaterial);
+    trunk.position.y = 0.55 * size;
+    tree.add(trunk);
+
+    var canopy = new THREE.Mesh(
+        new THREE.ConeGeometry(0.75 * size, 1.8 * size, 7),
+        canopyMaterials[Math.floor(Math.random() * canopyMaterials.length)]
+    );
+    canopy.position.y = 1.8 * size;
+    tree.add(canopy);
+    meadow.add(tree);
+}
+
+[
+    [-9, -8, 1.2], [-12, -12, 1.6], [-7, -17, 1.35],
+    [10, -9, 1.3], [13, -14, 1.7], [8, -19, 1.2],
+    [-18, -8, 1.8], [19, -10, 1.6], [-21, -18, 1.4], [22, -20, 1.5]
+].forEach(function (treeData) {
+    addTree(treeData[0], treeData[1], treeData[2]);
+});
+
+var grassMaterial = new THREE.MeshStandardMaterial({ color: 0x83a94d, roughness: 1 });
+var grassGeometry = new THREE.ConeGeometry(0.035, 0.24, 3);
+for (var tuft = 0; tuft < 90; tuft++) {
+    var grass = new THREE.Mesh(grassGeometry, grassMaterial);
+    var angle = Math.random() * Math.PI * 2;
+    var radius = 2.3 + Math.random() * 7;
+    grass.position.set(Math.cos(angle) * radius, -1.52, Math.sin(angle) * radius - 1.5);
+    grass.rotation.z = (Math.random() - 0.5) * 0.5;
+    meadow.add(grass);
+}
+
+// 7. 加载你的龙模型
 var dragon;
 
 loader.load(
@@ -103,7 +195,7 @@ loader.load(
     }
 );
 
-// 7. 鼠标拖动旋转龙模型
+// 8. 鼠标拖动旋转龙模型
 var isDragging = false;
 var isMoving = false;
 var previousPointerX = 0;
@@ -158,7 +250,7 @@ renderer.domElement.addEventListener("contextmenu", function (event) {
     event.preventDefault();
 });
 
-// 8. 滚轮缩放视角
+// 9. 滚轮缩放视角
 renderer.domElement.addEventListener("wheel", function (event) {
     event.preventDefault();
     camera.position.z = THREE.MathUtils.clamp(
@@ -168,7 +260,7 @@ renderer.domElement.addEventListener("wheel", function (event) {
     );
 }, { passive: false });
 
-// 9. 用 Web Audio 合成龙吼；点击按钮时播放
+// 10. 用 Web Audio 合成龙吼；点击按钮时播放
 var audioContext;
 var feedButton = document.getElementById("feed");
 var petMessage = document.getElementById("pet-message");
@@ -254,7 +346,7 @@ feedButton.addEventListener("click", function () {
     petMessage.textContent = "Dragon is pleasure now!!🐉";
 });
 
-// 10. 持续渲染场景
+// 11. 持续渲染场景
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);

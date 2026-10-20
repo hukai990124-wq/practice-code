@@ -11,7 +11,8 @@
         {
             "imports": {
                 "three": "https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.module.js"
-            }
+                "three/addons.": "https://cdn.jsdelivr.net/npm/three@0.150.1/example/jsm/"
+             }
         }
         </script>  
         <script type="module" src="javascriptpractice.js"></script>
@@ -19,7 +20,8 @@
 <body>
     <main class="profile" id="profile"></main>
 
-    <div id="pet">🐉</div>
+    <div id="pet" style="width:600px;max-width:100%;height:400px;"></div>
+    
     <button id="feed">feed</button>
     <p id="pet-message">Click the pet!</p>
 

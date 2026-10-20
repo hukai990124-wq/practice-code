@@ -1,4 +1,6 @@
-﻿var profile = {
+﻿import * as THREE from "three";
+import{ GLTFLoader } from "three/addons/loaders/GLTFLoader.js";}
+var profile = {
     name: "HuKai",
     intro: "A person from China, and studying code now.",
     details: [["Age", 27], 
@@ -22,4 +24,8 @@ nameElement.addEventListener("click", function () {
     var randomIndex = Math.floor(Math.random() * color.length);
     nameElement.style.color = color[randomIndex];
 });
+console.log("Three.js version", THREE.REVISION);
+var loader = new GLTFLoader();
+console.log("GLTFLoader initialized", loader);
+
 

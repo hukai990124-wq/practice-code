@@ -105,27 +105,42 @@ loader.load(
 
 // 7. 鼠标拖动旋转龙模型
 var isDragging = false;
+var isMoving = false;
 var previousPointerX = 0;
+var previousPointerY = 0;
 
 renderer.domElement.style.cursor = "grab";
 
 renderer.domElement.addEventListener("pointerdown", function (event) {
-    isDragging = true;
+    isMoving = event.button === 2;
+    isDragging = !isMoving;
     previousPointerX = event.clientX;
-    renderer.domElement.style.cursor = "grabbing";
+    previousPointerY = event.clientY;
+    renderer.domElement.style.cursor = isMoving ? "move" : "grabbing";
     renderer.domElement.setPointerCapture(event.pointerId);
 });
 
 renderer.domElement.addEventListener("pointermove", function (event) {
-    if (!isDragging || !dragon) return;
+    if ((!isDragging && !isMoving) || !dragon) return;
 
     var deltaX = event.clientX - previousPointerX;
-    dragon.rotation.y += deltaX * 0.01;
+    var deltaY = event.clientY - previousPointerY;
+
+    if (isMoving) {
+        var worldUnitsPerPixel = (2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))) / container.clientHeight;
+        dragon.position.x += deltaX * worldUnitsPerPixel;
+        dragon.position.y -= deltaY * worldUnitsPerPixel;
+    } else {
+        dragon.rotation.y += deltaX * 0.01;
+    }
+
     previousPointerX = event.clientX;
+    previousPointerY = event.clientY;
 });
 
 renderer.domElement.addEventListener("pointerup", function (event) {
     isDragging = false;
+    isMoving = false;
     renderer.domElement.style.cursor = "grab";
 
     if (renderer.domElement.hasPointerCapture(event.pointerId)) {
@@ -135,7 +150,12 @@ renderer.domElement.addEventListener("pointerup", function (event) {
 
 renderer.domElement.addEventListener("pointercancel", function () {
     isDragging = false;
+    isMoving = false;
     renderer.domElement.style.cursor = "grab";
+});
+
+renderer.domElement.addEventListener("contextmenu", function (event) {
+    event.preventDefault();
 });
 
 // 8. 滚轮缩放视角
@@ -164,10 +184,10 @@ feedButton.addEventListener("click", function () {
     audioContext.resume();
 
     var now = audioContext.currentTime;
-    var duration = 1.25;
+    var duration = 2.4;
     var master = audioContext.createGain();
     master.gain.setValueAtTime(0.0001, now);
-    master.gain.exponentialRampToValueAtTime(0.45, now + 0.08);
+    master.gain.exponentialRampToValueAtTime(0.32, now + 0.12);
     master.gain.exponentialRampToValueAtTime(0.0001, now + duration);
     master.connect(audioContext.destination);
 
@@ -176,18 +196,38 @@ feedButton.addEventListener("click", function () {
     var growlGain = audioContext.createGain();
     var growlFilter = audioContext.createBiquadFilter();
     growl.type = "sawtooth";
-    growl.frequency.setValueAtTime(115, now);
-    growl.frequency.exponentialRampToValueAtTime(42, now + duration);
+    growl.frequency.setValueAtTime(210, now);
+    growl.frequency.exponentialRampToValueAtTime(85, now + duration);
     growlFilter.type = "lowpass";
-    growlFilter.frequency.setValueAtTime(700, now);
-    growlFilter.frequency.exponentialRampToValueAtTime(180, now + duration);
-    growlGain.gain.setValueAtTime(0.7, now);
+    growlFilter.frequency.setValueAtTime(1100, now);
+    growlFilter.frequency.exponentialRampToValueAtTime(420, now + duration);
+    growlGain.gain.setValueAtTime(0.42, now);
     growlGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
     growl.connect(growlFilter);
     growlFilter.connect(growlGain);
     growlGain.connect(master);
     growl.start(now);
     growl.stop(now + duration);
+
+    // 更高的滑音叠加在低吼上，增加尖锐、像龙的嘶吼感。
+    var shriek = audioContext.createOscillator();
+    var shriekFilter = audioContext.createBiquadFilter();
+    var shriekGain = audioContext.createGain();
+    shriek.type = "triangle";
+    shriek.frequency.setValueAtTime(720, now + 0.08);
+    shriek.frequency.exponentialRampToValueAtTime(260, now + duration);
+    shriekFilter.type = "bandpass";
+    shriekFilter.frequency.setValueAtTime(1500, now);
+    shriekFilter.frequency.exponentialRampToValueAtTime(700, now + duration);
+    shriekFilter.Q.value = 1.4;
+    shriekGain.gain.setValueAtTime(0.0001, now);
+    shriekGain.gain.exponentialRampToValueAtTime(0.2, now + 0.18);
+    shriekGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    shriek.connect(shriekFilter);
+    shriekFilter.connect(shriekGain);
+    shriekGain.connect(master);
+    shriek.start(now);
+    shriek.stop(now + duration);
 
     var bufferSize = Math.floor(audioContext.sampleRate * duration);
     var noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
@@ -200,10 +240,10 @@ feedButton.addEventListener("click", function () {
     var noiseGain = audioContext.createGain();
     noise.buffer = noiseBuffer;
     noiseFilter.type = "bandpass";
-    noiseFilter.frequency.setValueAtTime(850, now);
-    noiseFilter.frequency.exponentialRampToValueAtTime(300, now + duration);
+    noiseFilter.frequency.setValueAtTime(1400, now);
+    noiseFilter.frequency.exponentialRampToValueAtTime(650, now + duration);
     noiseFilter.Q.value = 0.8;
-    noiseGain.gain.setValueAtTime(0.22, now);
+    noiseGain.gain.setValueAtTime(0.14, now);
     noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
     noise.connect(noiseFilter);
     noiseFilter.connect(noiseGain);
@@ -211,7 +251,7 @@ feedButton.addEventListener("click", function () {
     noise.start(now);
     noise.stop(now + duration);
 
-    petMessage.textContent = "嗷——！龙听见你了。";
+    petMessage.textContent = "Dragon is pleasure now!!🐉";
 });
 
 // 10. 持续渲染场景

@@ -105,6 +105,7 @@
             display: flex;
             align-items: center;
             justify-content: flex-start;
+            flex-wrap: wrap;
             gap: 20px;
             width: 100%;
             max-width: 1040px;
@@ -113,6 +114,30 @@
             color: var(--muted);
             font-size: 0.86rem;
             letter-spacing: 0.04em;
+        }
+
+        .personal-crest {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .personal-crest__image {
+            display: block;
+            width: 7rem;
+            height: 7rem;
+            flex: 0 0 auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 3px rgba(255, 205, 89, 0.8));
+        }
+
+        .personal-crest__motto {
+            color: #f1d38b;
+            font-family: "UnifrakturCook", "Old English Text MT", serif;
+            font-size: clamp(1.45rem, 3vw, 2rem);
+            line-height: 1.15;
+            text-shadow: 0 0 12px rgba(255, 205, 89, 0.22);
+            white-space: nowrap;
         }
 
         .footer-crest {
@@ -170,4 +195,6 @@
             #pet-message { text-align: left; }
             .site-footer { gap: 14px; font-size: 0.78rem; }
             .footer-crest { width: 84px; height: 84px; }
+            .personal-crest { gap: 0.75rem; }
+            .personal-crest__image { width: 5.25rem; height: 5.25rem; }
         }

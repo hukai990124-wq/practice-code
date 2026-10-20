@@ -412,6 +412,8 @@ var petAgeLabel = document.getElementById("pet-age-label");
 var petTitle = document.getElementById("pet-title");
 var dracoActions = document.getElementById("draco-actions");
 var shakeHandsButton = document.getElementById("shake-hands");
+var readTextPanel = document.getElementById("read-text-panel");
+var sirGavinChatPanel = document.getElementById("sir-gavin-chat");
 var dracoText = document.getElementById("draco-text");
 var dracoLanguage = document.getElementById("draco-language");
 var readTextButton = document.getElementById("read-text");
@@ -525,6 +527,9 @@ petSelect.addEventListener("change", function () {
     dracoActions.hidden = !isDraco;
     shakeHandsButton.hidden = isDraco;
     shakeHandsButton.disabled = !isDraco && !sirGavinModel;
+    // 根据所选角色切换专属下方区域：Draco使用朗读面板，Sir.Gavin显示预留聊天窗口。
+    readTextPanel.hidden = !isDraco;
+    sirGavinChatPanel.hidden = isDraco;
 
     if (isDraco) {
         if (sirGavinMixer) sirGavinMixer.stopAllAction();

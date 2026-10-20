@@ -248,6 +248,20 @@
         #stop-reading:hover { background: #1a2a32; }
         .read-text-note { margin: 0; color: var(--muted); font-size: 0.78rem; }
 
+        /* Chat with Sir.Gavin占位窗口：API接入前显示空聊天区，并禁用消息输入与发送。 */
+        .read-text-panel[hidden],
+        .chat-panel[hidden] { display: none; }
+        .chat-panel { display: grid; gap: 12px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
+        .chat-panel h3 { margin: 0; font-size: 1rem; }
+        .chat-window { display: grid; min-height: 180px; place-items: center; padding: 20px; border: 1px solid var(--line); border-radius: 6px; background: #0a0f14; }
+        .chat-placeholder { max-width: 440px; margin: 0; color: var(--muted); text-align: center; line-height: 1.6; }
+        .chat-composer { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; }
+        .chat-composer input,
+        .chat-composer button { min-height: 44px; border: 1px solid var(--line); border-radius: 5px; font: inherit; }
+        .chat-composer input { min-width: 0; padding: 0 12px; color: var(--text); background: #101820; }
+        .chat-composer button { padding: 0 18px; color: #071411; background: var(--accent); font-weight: 700; }
+        .chat-composer :disabled { opacity: 0.55; cursor: not-allowed; }
+
         .site-footer {
             display: flex;
             align-items: center;

@@ -56,16 +56,17 @@
                     <p class="pet-kicker">INTERACTIVE COMPANION</p>
                     <h2 id="pet-title">Web Pet</h2>
                 </div>
-                <!-- 目前只有 Draco；新增 option 即可展示更多可选宠物。 -->
+                <!-- 角色选择器：Draco 和 Sir.Gavin 共用同一处 3D 展示区域。 -->
                 <label class="pet-selector" for="pet-select">
-                    <span>Choose Pet</span>
+                    <span>Choose Character</span>
                     <select id="pet-select" name="pet">
                         <option value="draco" data-age="500" selected>Draco</option>
+                        <option value="sir-gavin" data-kind="person">Sir.Gavin</option>
                     </select>
                 </label>
                 <dl class="pet-details">
-                    <div><dt>Pet Name</dt><dd id="pet-name">Draco</dd></div>
-                    <div><dt>Age</dt><dd id="pet-age">500</dd></div>
+                    <div><dt id="pet-name-label">Pet Name</dt><dd id="pet-name">Draco</dd></div>
+                    <div><dt id="pet-age-label">Age</dt><dd id="pet-age">500</dd></div>
                 </dl>
             </div>
             <!-- Three.js 会把 WebGL 画布插入这个容器。 -->
@@ -77,10 +78,14 @@
                 <audio id="dragon-roar" src="./dragon-studio-epic-dragon-roar-364481.mp3" preload="auto"></audio>
                 <!-- 抚摸 Draco 功能：加载新加入的互动音频供抚摸按钮播放。 -->
                 <audio id="dragon-pet-sound" src="./dragon-studio-dragon-roar-364478.mp3" preload="auto"></audio>
-                <div class="pet-actions">
+                <!-- Shake hands语音：由 Kokoro 男声模型离线生成，作为普通音频播放以避免依赖浏览器在线TTS。 -->
+                <audio id="sir-gavin-handshake-voice" src="./sir-gavin-handshake.wav" preload="auto"></audio>
+                <div class="pet-actions" id="draco-actions">
                     <button id="feed" type="button">Feed Draco</button>
                     <button id="pet-draco" type="button">Pet Draco</button>
                 </div>
+                <!-- Shake hands功能：仅选择 Sir.Gavin 时显示握手互动按钮。 -->
+                <button id="shake-hands" type="button" hidden>Shake hands</button>
                 <p id="pet-message" aria-live="polite">Draco is ready to meet you.</p>
             </div>
             <!-- Read Text功能：让访客输入文字，并由 Draco 用较低、较慢的 TTS 声音朗读。 -->

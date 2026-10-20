@@ -7,7 +7,8 @@ console.log("GLTFLoader initialized", loader);
 
 // 1. 创建场景：场景是所有灯光、地形和宠物模型的共同容器。
 var scene = new THREE.Scene();
-scene.background = new THREE.Color(0xb8d9d5);
+var meadowSkyColor = new THREE.Color(0xb8d9d5);
+scene.background = meadowSkyColor;
 scene.fog = new THREE.Fog(0xb8d9d5, 22, 70);
 
 // 2. 找到 HTML 中用于显示 3D 画布的容器，并清除其中旧内容。
@@ -27,8 +28,10 @@ camera.lookAt(0, 0, 0);
 
 // 4. 创建 WebGL 渲染器，把 Three.js 场景绘制到浏览器画布中。
 var renderer = new THREE.WebGLRenderer({
-    antialias: true
+    antialias: true,
+    alpha: true
 });
+renderer.setClearColor(0x000000, 0);
 
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(
@@ -149,10 +152,132 @@ for (var tuft = 0; tuft < 90; tuft++) {
 
 // 7. 异步加载 Draco 模型：文件读取完成后才会运行成功回调。
 var dragon;
+var activeCharacterModel;
+var sirGavinModel;
+var sirGavinLoading = false;
+var sirGavinMixer;
+var sirIdleAction;
+var sirHandshakeAction;
+var currentCharacterId = "draco";
 var dragonMixer;
 var dragonFeedAction;
 var dragonPetAction;
 var animationClock = new THREE.Clock();
+
+// 角色展示设置：Sir.Gavin 使用城堡背景和上半身近景，Draco 保留草地全景。
+function setCharacterPresentation(characterId) {
+    var isSirGavin = characterId === "sir-gavin";
+    container.classList.toggle("sir-gavin-background", isSirGavin);
+    meadow.visible = !isSirGavin;
+    scene.background = isSirGavin ? null : meadowSkyColor;
+    scene.fog = isSirGavin ? null : new THREE.Fog(0xb8d9d5, 22, 70);
+
+    var cameraHeight = isSirGavin ? 0.72 : 0;
+    camera.position.set(0, cameraHeight, isSirGavin ? 2.9 : 6);
+    camera.lookAt(0, cameraHeight, 0);
+}
+
+// 依据模型包围盒统一缩放并居中，保证不同角色能在同一个 3D 画布中展示。
+function fitCharacterModel(model) {
+    var box = new THREE.Box3().setFromObject(model);
+    var center = box.getCenter(new THREE.Vector3());
+    var size = box.getSize(new THREE.Vector3());
+    var maxSize = Math.max(size.x, size.y, size.z);
+
+    if (maxSize > 0) {
+        var scale = 3 / maxSize;
+        model.scale.setScalar(scale);
+        model.position.copy(center).multiplyScalar(-scale);
+    }
+}
+
+// Sir.Gavin 动作：加载模型自带的 3 秒循环待机和握手动画，并在两者间平滑切换。
+function createSirGavinAnimationActions(model, animations) {
+    var idleClip = animations.find(function (clip) {
+        return clip.name === "Gavin_Idle_HandsOnHips_Loop";
+    }) || animations.find(function (clip) {
+        return clip.name.toLowerCase().includes("idle");
+    });
+    var handshakeClip = animations.find(function (clip) {
+        return clip.name === "Gavin_RightHand_Handshake_Offer";
+    }) || animations.find(function (clip) {
+        return clip.name.toLowerCase().includes("handshake");
+    });
+    sirGavinMixer = new THREE.AnimationMixer(model);
+    if (idleClip) {
+        sirIdleAction = sirGavinMixer.clipAction(idleClip);
+        sirIdleAction.setLoop(THREE.LoopRepeat, Infinity);
+        sirIdleAction.play();
+    } else {
+        console.error("Sir.Gavin model does not contain an idle animation.");
+    }
+
+    if (handshakeClip) {
+        sirHandshakeAction = sirGavinMixer.clipAction(handshakeClip);
+        sirHandshakeAction.setLoop(THREE.LoopOnce, 1);
+        sirHandshakeAction.clampWhenFinished = true;
+        sirGavinMixer.addEventListener("finished", function (event) {
+            if (event.action !== sirHandshakeAction) return;
+            // 握手结束后淡出握手姿势，并从头恢复循环待机动作。
+            sirHandshakeAction.fadeOut(0.25);
+            if (sirIdleAction) sirIdleAction.reset().fadeIn(0.25).play();
+        });
+    } else {
+        console.error("Sir.Gavin model does not contain a handshake animation.");
+    }
+}
+
+// 切换当前可见角色模型；模型加载完成前保留画布中的现有角色。
+function activateCharacterModel(characterId) {
+    currentCharacterId = characterId;
+    setCharacterPresentation(characterId);
+
+    if (characterId === "draco") {
+        if (!dragon) return;
+        if (activeCharacterModel !== dragon) {
+            if (activeCharacterModel) scene.remove(activeCharacterModel);
+            activeCharacterModel = dragon;
+            scene.add(activeCharacterModel);
+        }
+        return;
+    }
+
+    if (sirGavinModel) {
+        if (activeCharacterModel) scene.remove(activeCharacterModel);
+        activeCharacterModel = sirGavinModel;
+        scene.add(activeCharacterModel);
+        // 再次选中 Sir.Gavin 时从待机动画起点重新循环。
+        if (sirIdleAction) sirIdleAction.reset().play();
+        return;
+    }
+
+    if (sirGavinLoading) return;
+    sirGavinLoading = true;
+    petMessage.textContent = "Sir.Gavin is joining…";
+    loader.load(
+        "./sir_gavin.glb",
+        function (gltf) {
+            sirGavinModel = gltf.scene;
+            fitCharacterModel(sirGavinModel);
+            createSirGavinAnimationActions(sirGavinModel, gltf.animations);
+            sirGavinLoading = false;
+
+            if (currentCharacterId === "sir-gavin") {
+                if (activeCharacterModel) scene.remove(activeCharacterModel);
+                activeCharacterModel = sirGavinModel;
+                scene.add(activeCharacterModel);
+                shakeHandsButton.disabled = false;
+                petMessage.textContent = "Sir.Gavin is ready to shake hands.";
+            }
+        },
+        undefined,
+        function (error) {
+            sirGavinLoading = false;
+            console.error("Sir.Gavin model failed to load:", error);
+            petMessage.textContent = "Could not load Sir.Gavin. Please check the model file.";
+        }
+    );
+}
 
 // load 的参数依次为模型路径、成功回调、加载进度回调和失败回调。
 loader.load(
@@ -160,7 +285,6 @@ loader.load(
 
     function (gltf) {
         dragon = gltf.scene;
-        scene.add(dragon);
 
         // 按动画名称分别绑定 Feed 和 Pet 动作；两段都只播放一次并停在结束姿势。
         if (gltf.animations.length > 0) {
@@ -185,16 +309,13 @@ loader.load(
             }
         }
 
-        // 根据包围盒求模型中心和尺寸，再缩放到约 3 个场景单位并移到原点附近。
-        var box = new THREE.Box3().setFromObject(dragon);
-        var center = box.getCenter(new THREE.Vector3());
-        var size = box.getSize(new THREE.Vector3());
+        fitCharacterModel(dragon);
 
-        var maxSize = Math.max(size.x, size.y, size.z);
-        if (maxSize > 0) {
-            var scale = 3 / maxSize;
-            dragon.scale.setScalar(scale);
-            dragon.position.copy(center).multiplyScalar(-scale);
+        // Draco 加载完成时只在当前选中 Draco 的情况下显示，避免覆盖正在显示的其他角色。
+        if (currentCharacterId === "draco") {
+            if (activeCharacterModel) scene.remove(activeCharacterModel);
+            activeCharacterModel = dragon;
+            scene.add(activeCharacterModel);
         }
 
         console.log("Draco Loaded!");
@@ -228,7 +349,7 @@ renderer.domElement.addEventListener("pointerdown", function (event) {
 });
 
 renderer.domElement.addEventListener("pointermove", function (event) {
-    if ((!isDragging && !isMoving) || !dragon) return;
+    if ((!isDragging && !isMoving) || !activeCharacterModel) return;
 
     var deltaX = event.clientX - previousPointerX;
     var deltaY = event.clientY - previousPointerY;
@@ -236,10 +357,10 @@ renderer.domElement.addEventListener("pointermove", function (event) {
     if (isMoving) {
         // 把像素移动量换算为场景单位，使平移速度随缩放距离变化。
         var worldUnitsPerPixel = (2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))) / container.clientHeight;
-        dragon.position.x += deltaX * worldUnitsPerPixel;
-        dragon.position.y -= deltaY * worldUnitsPerPixel;
+        activeCharacterModel.position.x += deltaX * worldUnitsPerPixel;
+        activeCharacterModel.position.y -= deltaY * worldUnitsPerPixel;
     } else {
-        dragon.rotation.y += deltaX * 0.01;
+        activeCharacterModel.rotation.y += deltaX * 0.01;
     }
 
     previousPointerX = event.clientX;
@@ -286,6 +407,11 @@ var petMessage = document.getElementById("pet-message");
 var petSelect = document.getElementById("pet-select");
 var petName = document.getElementById("pet-name");
 var petAge = document.getElementById("pet-age");
+var petNameLabel = document.getElementById("pet-name-label");
+var petAgeLabel = document.getElementById("pet-age-label");
+var petTitle = document.getElementById("pet-title");
+var dracoActions = document.getElementById("draco-actions");
+var shakeHandsButton = document.getElementById("shake-hands");
 var dracoText = document.getElementById("draco-text");
 var dracoLanguage = document.getElementById("draco-language");
 var readTextButton = document.getElementById("read-text");
@@ -384,15 +510,37 @@ contactAuthorDialog.addEventListener("click", function (event) {
     }
 });
 
-// 用户换选项后读取该 option 的文字和 data-age 属性并刷新界面。
+// 角色切换功能：同步角色资料、专属按钮和 3D 模型显示。
 petSelect.addEventListener("change", function () {
     var selectedOption = petSelect.options[petSelect.selectedIndex];
     selectedPetName = selectedOption.textContent;
+    currentCharacterId = selectedOption.value;
+    var isDraco = currentCharacterId === "draco";
+
     petName.textContent = selectedPetName;
-    petAge.textContent = selectedOption.dataset.age;
-    feedButton.textContent = "Feed " + selectedPetName;
-    petDracoButton.textContent = "Pet " + selectedPetName;
-    petMessage.textContent = selectedPetName + " is ready to meet you.";
+    petTitle.textContent = isDraco ? "Web Pet" : "Character";
+    petNameLabel.textContent = isDraco ? "Pet Name" : "Character";
+    petAgeLabel.textContent = isDraco ? "Age" : "Type";
+    petAge.textContent = isDraco ? selectedOption.dataset.age : selectedOption.dataset.kind;
+    dracoActions.hidden = !isDraco;
+    shakeHandsButton.hidden = isDraco;
+    shakeHandsButton.disabled = !isDraco && !sirGavinModel;
+
+    if (isDraco) {
+        if (sirGavinMixer) sirGavinMixer.stopAllAction();
+        feedButton.textContent = "Feed " + selectedPetName;
+        petDracoButton.textContent = "Pet " + selectedPetName;
+    } else {
+        if (dragonMixer) dragonMixer.stopAllAction();
+        dragonRoar.pause();
+        dragonPetSound.pause();
+        if (speechSynthesisEngine) speechSynthesisEngine.cancel();
+    }
+
+    activateCharacterModel(currentCharacterId);
+    petMessage.textContent = isDraco
+        ? "Draco is ready to meet you."
+        : sirGavinModel ? "Sir.Gavin is ready to shake hands." : "Sir.Gavin is joining…";
 });
 
 // 用项目里的真实龙吼音频替代 Web Audio 合成音；src 路径相对于 practice.html。
@@ -403,6 +551,7 @@ dragonRoar.volume = 0.8;
 var dragonPetSound = document.getElementById("dragon-pet-sound");
 
 petDracoButton.addEventListener("click", function () {
+    if (currentCharacterId !== "draco") return;
     // 抚摸时播放模型专属的低头、收翼和尾巴回摆动作。
     if (dragonPetAction) {
         if (dragonFeedAction) dragonFeedAction.stop();
@@ -419,7 +568,29 @@ petDracoButton.addEventListener("click", function () {
     });
 });
 
+// Shake hands功能：为 Sir.Gavin 提供握手动作、回应和 Kokoro 男声台词。
+var sirHandshakeVoice = document.getElementById("sir-gavin-handshake-voice");
+shakeHandsButton.addEventListener("click", function () {
+    if (currentCharacterId !== "sir-gavin" || !sirGavinModel) return;
+    // 再次点击会从抬手开始重播整段握手动作。
+    if (sirHandshakeAction) {
+        if (sirIdleAction) sirIdleAction.fadeOut(0.2);
+        sirHandshakeAction.reset();
+        sirHandshakeAction.fadeIn(0.2).play();
+    }
+    petMessage.textContent = "You shook hands with Sir.Gavin.";
+
+    // 握手时播放 Kokoro 生成的低沉男声台词；每次点击都从头播放。
+    sirHandshakeVoice.pause();
+    sirHandshakeVoice.currentTime = 0;
+    sirHandshakeVoice.play().catch(function (error) {
+        console.error("Sir.Gavin handshake voice playback failed:", error);
+        petMessage.textContent = "You shook hands with Sir.Gavin, but the voice could not be played.";
+    });
+});
+
 feedButton.addEventListener("click", function () {
+    if (currentCharacterId !== "draco") return;
     // 点击 Feed 时重置并播放模型动画，使动作与下面的龙吼同时开始。
     if (dragonFeedAction) {
         if (dragonPetAction) dragonPetAction.stop();
@@ -444,7 +615,9 @@ feedButton.addEventListener("click", function () {
 function animate() {
     requestAnimationFrame(animate);
     // 每帧推进动画混合器，让 GLB 动画按真实经过时间播放。
-    if (dragonMixer) dragonMixer.update(animationClock.getDelta());
+    var frameDelta = animationClock.getDelta();
+    if (dragonMixer && currentCharacterId === "draco") dragonMixer.update(frameDelta);
+    if (sirGavinMixer && currentCharacterId === "sir-gavin") sirGavinMixer.update(frameDelta);
     renderer.render(scene, camera);
 }
 

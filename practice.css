@@ -159,6 +159,11 @@
             background: #101820;
         }
 
+        /* Sir.Gavin专属城堡背景：由角色切换逻辑添加此类，图片覆盖整个 3D 展示区。 */
+        #pet.sir-gavin-background {
+            background: url("./wp4096204.jpg") center center / cover no-repeat;
+        }
+
         #pet canvas {
             display: block;
             width: 100%;
@@ -180,7 +185,8 @@
         .pet-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
         #feed,
-        #pet-draco {
+        #pet-draco,
+        #shake-hands {
             min-height: 44px;
             padding: 0 20px;
             border: 1px solid var(--accent);
@@ -194,9 +200,14 @@
         }
 
         #feed:hover,
-        #pet-draco:hover { background: var(--accent-strong); transform: translateY(-1px); }
+        #pet-draco:hover,
+        #shake-hands:hover { background: var(--accent-strong); transform: translateY(-1px); }
         #feed:focus-visible,
-        #pet-draco:focus-visible { outline: 3px solid white; outline-offset: 3px; }
+        #pet-draco:focus-visible,
+        #shake-hands:focus-visible { outline: 3px solid white; outline-offset: 3px; }
+        .pet-actions[hidden],
+        #shake-hands[hidden] { display: none; }
+        #shake-hands:disabled { opacity: 0.55; cursor: wait; }
         #pet-message { margin: 0; color: var(--muted); font-size: 0.9rem; text-align: right; }
 
         /* Read Text功能：把输入框和朗读控制放在互动按钮下方，沿用页面深色配色。 */

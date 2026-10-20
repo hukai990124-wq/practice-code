@@ -177,7 +177,10 @@
             margin-top: 16px;
         }
 
-        #feed {
+        .pet-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+        #feed,
+        #pet-draco {
             min-height: 44px;
             padding: 0 20px;
             border: 1px solid var(--accent);
@@ -190,8 +193,10 @@
             transition: background 160ms ease, transform 160ms ease;
         }
 
-        #feed:hover { background: var(--accent-strong); transform: translateY(-1px); }
-        #feed:focus-visible { outline: 3px solid white; outline-offset: 3px; }
+        #feed:hover,
+        #pet-draco:hover { background: var(--accent-strong); transform: translateY(-1px); }
+        #feed:focus-visible,
+        #pet-draco:focus-visible { outline: 3px solid white; outline-offset: 3px; }
         #pet-message { margin: 0; color: var(--muted); font-size: 0.9rem; text-align: right; }
 
         .site-footer {

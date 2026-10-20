@@ -75,7 +75,12 @@
             <div class="pet-footer">
                 <!-- 音频文件与网页放在同一目录，便于静态托管一起发布。 -->
                 <audio id="dragon-roar" src="./dragon-studio-epic-dragon-roar-364481.mp3" preload="auto"></audio>
-                <button id="feed" type="button">Feed Draco</button>
+                <!-- 抚摸 Draco 功能：加载新加入的互动音频供抚摸按钮播放。 -->
+                <audio id="dragon-pet-sound" src="./dragon-studio-dragon-roar-364478.mp3" preload="auto"></audio>
+                <div class="pet-actions">
+                    <button id="feed" type="button">Feed Draco</button>
+                    <button id="pet-draco" type="button">Pet Draco</button>
+                </div>
                 <p id="pet-message" aria-live="polite">Draco is ready to meet you.</p>
             </div>
         </section>

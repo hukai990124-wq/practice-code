@@ -151,6 +151,7 @@ for (var tuft = 0; tuft < 90; tuft++) {
 var dragon;
 var dragonMixer;
 var dragonFeedAction;
+var dragonPetAction;
 var animationClock = new THREE.Clock();
 
 // load 的参数依次为模型路径、成功回调、加载进度回调和失败回调。
@@ -161,12 +162,27 @@ loader.load(
         dragon = gltf.scene;
         scene.add(dragon);
 
-        // Draco 模型自带抬头、展翼和摆尾动画；保存为一次性动作供 Feed 按钮触发。
+        // 按动画名称分别绑定 Feed 和 Pet 动作；两段都只播放一次并停在结束姿势。
         if (gltf.animations.length > 0) {
             dragonMixer = new THREE.AnimationMixer(dragon);
-            dragonFeedAction = dragonMixer.clipAction(gltf.animations[0]);
-            dragonFeedAction.setLoop(THREE.LoopOnce, 1);
-            dragonFeedAction.clampWhenFinished = true;
+            var feedClip = gltf.animations.find(function (clip) {
+                return clip.name.includes("HeadLift");
+            });
+            var petClip = gltf.animations.find(function (clip) {
+                return clip.name.includes("HeadBow");
+            });
+
+            if (feedClip) {
+                dragonFeedAction = dragonMixer.clipAction(feedClip);
+                dragonFeedAction.setLoop(THREE.LoopOnce, 1);
+                dragonFeedAction.clampWhenFinished = true;
+            }
+
+            if (petClip) {
+                dragonPetAction = dragonMixer.clipAction(petClip);
+                dragonPetAction.setLoop(THREE.LoopOnce, 1);
+                dragonPetAction.clampWhenFinished = true;
+            }
         }
 
         // 根据包围盒求模型中心和尺寸，再缩放到约 3 个场景单位并移到原点附近。
@@ -265,6 +281,7 @@ renderer.domElement.addEventListener("wheel", function (event) {
 // 10. 宠物选择与喂食交互：选择项的名称和 data-age 会同步到页面资料区。
 var audioContext;
 var feedButton = document.getElementById("feed");
+var petDracoButton = document.getElementById("pet-draco");
 var petMessage = document.getElementById("pet-message");
 var petSelect = document.getElementById("pet-select");
 var petName = document.getElementById("pet-name");
@@ -297,6 +314,7 @@ petSelect.addEventListener("change", function () {
     petName.textContent = selectedPetName;
     petAge.textContent = selectedOption.dataset.age;
     feedButton.textContent = "Feed " + selectedPetName;
+    petDracoButton.textContent = "Pet " + selectedPetName;
     petMessage.textContent = selectedPetName + " is ready to meet you.";
 });
 
@@ -304,9 +322,30 @@ petSelect.addEventListener("change", function () {
 var dragonRoar = document.getElementById("dragon-roar");
 dragonRoar.volume = 0.8;
 
+// 抚摸 Draco 功能：播放新加入的抚摸回应音频，并显示指定的互动回应。
+var dragonPetSound = document.getElementById("dragon-pet-sound");
+
+petDracoButton.addEventListener("click", function () {
+    // 抚摸时播放模型专属的低头、收翼和尾巴回摆动作。
+    if (dragonPetAction) {
+        if (dragonFeedAction) dragonFeedAction.stop();
+        dragonPetAction.reset();
+        dragonPetAction.play();
+    }
+
+    dragonPetSound.pause();
+    dragonPetSound.currentTime = 0;
+    petMessage.textContent = "Draco accepts your petting.";
+
+    dragonPetSound.play().catch(function (error) {
+        console.error("抚摸回应音频播放失败：", error);
+    });
+});
+
 feedButton.addEventListener("click", function () {
     // 点击 Feed 时重置并播放模型动画，使动作与下面的龙吼同时开始。
     if (dragonFeedAction) {
+        if (dragonPetAction) dragonPetAction.stop();
         dragonFeedAction.reset();
         dragonFeedAction.play();
     }

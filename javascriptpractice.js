@@ -260,6 +260,25 @@ var petName = document.getElementById("pet-name");
 var petAge = document.getElementById("pet-age");
 var selectedPetName = petSelect.options[petSelect.selectedIndex].textContent;
 
+// Contact Author功能：打开 GitHub 联系弹窗，并支持关闭按钮和点击遮罩关闭。
+var contactAuthorTrigger = document.getElementById("contact-author-trigger");
+var contactAuthorDialog = document.getElementById("contact-author-dialog");
+var contactAuthorClose = document.getElementById("contact-author-close");
+
+contactAuthorTrigger.addEventListener("click", function () {
+    contactAuthorDialog.showModal();
+});
+
+contactAuthorClose.addEventListener("click", function () {
+    contactAuthorDialog.close();
+});
+
+contactAuthorDialog.addEventListener("click", function (event) {
+    if (event.target === contactAuthorDialog) {
+        contactAuthorDialog.close();
+    }
+});
+
 // 用户换选项后读取该 option 的文字和 data-age 属性并刷新界面。
 petSelect.addEventListener("change", function () {
     var selectedOption = petSelect.options[petSelect.selectedIndex];

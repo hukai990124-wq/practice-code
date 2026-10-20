@@ -5,6 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <style>
+        body {
+            margin: 0;
+            padding: 32px;
+            font-family: Arial, sans-serif;
+        }
+
+        .page-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px 0;
+        }
+
+        .section-divider {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 0;
+            border-top: 1px solid #999;
+        }
+
+        #pet {
+            width: 600px;
+            max-width: 100%;
+            height: 400px;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 16px; }
+            #pet { height: 320px; }
+        }
     </style>
 
         <script type="importmap">
@@ -18,12 +47,20 @@
         <script type="module" src="javascriptpractice.js"></script>
     </head>  
 <body>
-    <main class="profile" id="profile"></main>
+    <main>
+        <section class="page-section profile-section" aria-label="个人简介">
+            <div class="profile" id="profile"></div>
+        </section>
 
-    <div id="pet" style="width:600px;max-width:100%;height:400px;"></div>
+        <hr class="section-divider">
 
-    <button id="feed">feed</button>
-    <p id="pet-message">Click the pet!</p>
+        <section class="page-section pet-section" aria-labelledby="pet-title">
+            <h2 id="pet-title">Web Pet</h2>
+            <div id="pet"></div>
+            <button id="feed">feed</button>
+            <p id="pet-message">Click the pet!</p>
+        </section>
+    </main>
 
     
 

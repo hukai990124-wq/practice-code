@@ -54,19 +54,19 @@
             <div class="pet-heading">
                 <div class="pet-title-group">
                     <p class="pet-kicker">INTERACTIVE COMPANION</p>
-                    <h2 id="pet-title">Web Pet</h2>
+                    <h2 id="pet-title">Character</h2>
                 </div>
                 <!-- 隗定牡騾画叫蝎ｨ・咼raco 蜥・Sir.Gavin 蜈ｱ逕ｨ蜷御ｸ螟・3D 螻慕､ｺ蛹ｺ蝓溘・-->
                 <label class="pet-selector" for="pet-select">
                     <span>Choose Character</span>
                     <select id="pet-select" name="pet">
-                        <option value="draco" data-age="500" selected>Draco</option>
-                        <option value="sir-gavin" data-kind="person">Sir.Gavin</option>
+                        <option value="sir-gavin" data-kind="person" selected>Sir.Gavin</option>
+                        <option value="draco" data-age="500">Draco</option>
                     </select>
                 </label>
                 <dl class="pet-details">
-                    <div><dt id="pet-name-label">Pet Name</dt><dd id="pet-name">Draco</dd></div>
-                    <div><dt id="pet-age-label">Age</dt><dd id="pet-age">500</dd></div>
+                    <div><dt id="pet-name-label">Character</dt><dd id="pet-name">Sir.Gavin</dd></div>
+                    <div><dt id="pet-age-label">Type</dt><dd id="pet-age">Person</dd></div>
                 </dl>
             </div>
             <!-- Three.js 莨壽滑 WebGL 逕ｻ蟶・薯蜈･霑吩ｸｪ螳ｹ蝎ｨ縲・-->
@@ -80,16 +80,16 @@
                 <audio id="dragon-pet-sound" src="./dragon-studio-dragon-roar-364478.mp3" preload="auto"></audio>
                 <!-- Shake hands隸ｭ髻ｳ・夂罰 Kokoro 逕ｷ螢ｰ讓｡蝙狗ｦｻ郤ｿ逕滓・・御ｽ應ｸｺ譎ｮ騾夐浹鬚第眺謾ｾ莉･驕ｿ蜈堺ｾ晁ｵ匁ｵ剰ｧ亥勣蝨ｨ郤ｿTTS縲・-->
                 <audio id="sir-gavin-handshake-voice" src="./sir-gavin-handshake.wav" preload="auto"></audio>
-                <div class="pet-actions" id="draco-actions">
+                <div class="pet-actions" id="draco-actions" hidden>
                     <button id="feed" type="button">Feed Draco</button>
                     <button id="pet-draco" type="button">Pet Draco</button>
                 </div>
                 <!-- Shake hands蜉溯・・壻ｻ・画叫 Sir.Gavin 譌ｶ譏ｾ遉ｺ謠｡謇倶ｺ貞勘謖蛾聴縲・-->
-                <button id="shake-hands" type="button" hidden>Shake hands</button>
-                <p id="pet-message" aria-live="polite">Draco is ready to meet you.</p>
+                <button id="shake-hands" type="button" disabled>Shake hands</button>
+                <p id="pet-message" aria-live="polite">Sir.Gavin is joining…</p>
             </div>
             <!-- Read Text蜉溯・・夊ｮｩ隶ｿ螳｢霎灘・譁・ｭ暦ｼ悟ｹｶ逕ｱ Draco 逕ｨ霎・ｽ弱∬ｾ・・逧・TTS 螢ｰ髻ｳ譛苓ｯｻ縲・-->
-            <div class="read-text-panel" id="read-text-panel">
+            <div class="read-text-panel" id="read-text-panel" hidden>
                 <label class="read-text-label" for="draco-text">Text for Draco to read</label>
                 <label class="read-text-language" for="draco-language">
                     <span>Language</span>
@@ -109,7 +109,7 @@
                 <p class="read-text-note" id="read-text-note">Draco uses a deeper, slower voice. Available voices depend on your device.</p>
             </div>
             <!-- Chat with Sir.Gavin界面：先展示未接 API 的聊天窗口，部署并接入服务后再启用输入。 -->
-            <section class="chat-panel" id="sir-gavin-chat" aria-labelledby="sir-gavin-chat-title" hidden>
+            <section class="chat-panel" id="sir-gavin-chat" aria-labelledby="sir-gavin-chat-title">
                 <h3 id="sir-gavin-chat-title">Chat with Sir.Gavin</h3>
                 <div class="chat-window" role="log" aria-live="polite">
                     <p class="chat-placeholder">Chat will be enabled after the site is deployed and connected to an AI API.</p>

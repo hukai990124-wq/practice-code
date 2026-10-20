@@ -158,7 +158,7 @@ var sirGavinLoading = false;
 var sirGavinMixer;
 var sirIdleAction;
 var sirHandshakeAction;
-var currentCharacterId = "draco";
+var currentCharacterId = "sir-gavin";
 var dragonMixer;
 var dragonFeedAction;
 var dragonPetAction;
@@ -615,6 +615,9 @@ feedButton.addEventListener("click", function () {
         petMessage.textContent = "Could not play the roar. Please check the audio file.";
     });
 });
+
+// 初次打开时也执行角色切换逻辑，加载默认的 Sir.Gavin 并同步专属界面状态。
+petSelect.dispatchEvent(new Event("change"));
 
 // 11. 每帧重新绘制场景；requestAnimationFrame 跟随浏览器刷新节奏运行。
 function animate() {

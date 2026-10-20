@@ -3,173 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HuKai · Web Pet</title>
-    <style>
-        :root {
-            color-scheme: dark;
-            --page: #0a0f14;
-            --surface: #111a22;
-            --text: #edf4f5;
-            --muted: #9aabb4;
-            --line: #2b3b45;
-            --accent: #76e4d2;
-            --accent-strong: #b7fff1;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            min-height: 100vh;
-            margin: 0;
-            padding: 40px 24px;
-            color: var(--text);
-            background: radial-gradient(ellipse at 50% 0%, #1a2a32 0%, var(--page) 58%);
-            font-family: Inter, "Segoe UI", Arial, sans-serif;
-        }
-
-        main { max-width: 1040px; margin: 0 auto; }
-
-        .page-section {
-            padding: 32px;
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            background: rgba(17, 26, 34, 0.92);
-            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.2);
-        }
-
-        .profile-section { margin-bottom: 20px; }
-        .section-divider {
-            width: 72%;
-            margin: 0 auto 20px;
-            border: 0;
-            border-top: 1px solid var(--line);
-        }
-
-        #profile::before {
-            display: block;
-            margin-bottom: 12px;
-            color: var(--accent);
-            content: "PERSONAL PROFILE";
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 0.18em;
-        }
-
-        #profile h1 {
-            margin: 0;
-            font-size: clamp(2.2rem, 6vw, 3.5rem);
-            line-height: 1.05;
-            letter-spacing: -0.045em;
-        }
-
-        #profile .intro {
-            max-width: 620px;
-            margin: 16px 0 24px;
-            color: var(--muted);
-            font-size: 1.05rem;
-            line-height: 1.7;
-        }
-
-        #profile dl {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 12px;
-            margin: 0;
-        }
-
-        #profile dt, #profile dd { margin: 0; }
-        #profile dt {
-            margin-bottom: 6px;
-            color: var(--muted);
-            font-size: 0.78rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-
-        #profile dd { font-size: 0.95rem; line-height: 1.5; }
-
-        .pet-heading {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 24px;
-            margin-bottom: 20px;
-        }
-
-        .pet-heading h2 {
-            margin: 0;
-            font-size: clamp(1.8rem, 4vw, 2.5rem);
-            letter-spacing: -0.04em;
-        }
-
-        .pet-kicker {
-            margin: 0 0 8px;
-            color: var(--accent);
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 0.16em;
-        }
-
-        .pet-details { display: flex; gap: 28px; margin: 0; }
-        .pet-details div { display: grid; gap: 4px; }
-        .pet-details dt { color: var(--muted); font-size: 0.75rem; }
-        .pet-details dd { margin: 0; font-weight: 650; }
-
-        #pet {
-            width: 100%;
-            height: min(55vw, 480px);
-            min-height: 300px;
-            overflow: hidden;
-            border: 1px solid #30434d;
-            border-radius: 8px;
-            background: #101820;
-        }
-
-        #pet canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-            touch-action: none;
-        }
-
-        .interaction-hint { margin: 10px 0 0; color: var(--muted); font-size: 0.8rem; }
-
-        .pet-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            margin-top: 16px;
-        }
-
-        #feed {
-            min-height: 44px;
-            padding: 0 20px;
-            border: 1px solid var(--accent);
-            border-radius: 5px;
-            color: #071411;
-            background: var(--accent);
-            font: inherit;
-            font-weight: 750;
-            cursor: pointer;
-            transition: background 160ms ease, transform 160ms ease;
-        }
-
-        #feed:hover { background: var(--accent-strong); transform: translateY(-1px); }
-        #feed:focus-visible { outline: 3px solid white; outline-offset: 3px; }
-        #pet-message { margin: 0; color: var(--muted); font-size: 0.9rem; text-align: right; }
-
-        @media (max-width: 640px) {
-            body { padding: 16px 12px; }
-            .page-section { padding: 22px 18px; }
-            #profile dl { grid-template-columns: 1fr 1fr; }
-            .pet-heading { align-items: flex-start; flex-direction: column; }
-            .pet-details { gap: 22px; }
-            #pet { height: 68vw; min-height: 280px; }
-            .pet-footer { align-items: flex-start; flex-direction: column; }
-            #pet-message { text-align: left; }
-        }
-    </style>
+    <title>Web Pet · Draco</title>
+    <link rel="stylesheet" href="practice.css">
 
     <script type="importmap">
     {
@@ -183,12 +18,6 @@
 </head>
 <body>
     <main>
-        <section class="page-section profile-section" aria-label="个人简介">
-            <div class="profile" id="profile"></div>
-        </section>
-
-        <hr class="section-divider">
-
         <section class="page-section pet-section" aria-labelledby="pet-title">
             <div class="pet-heading">
                 <div>
@@ -208,5 +37,11 @@
             </div>
         </section>
     </main>
+    <footer class="site-footer">
+        <span>© 2026 @HuKai · 保留所有权利</span>
+        <span class="footer-crest" aria-hidden="true">
+            <img src="./sigilHK.png" alt="">
+        </span>
+    </footer>
 </body>
 </html>

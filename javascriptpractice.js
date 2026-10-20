@@ -1,29 +1,5 @@
 ﻿import * as THREE from "three";
 import{ GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-var profile = {
-    name: "HuKai",
-    intro: "A person from China, and studying code now.",
-    details: [["Age", 27], 
-    ["location", "Tokyo"],
-     ["Language", "Chinese,English,Japanese"]
-]
-};
-
-var detailsHtml = profile.details.map(function (item) {
-    return "<dt>" + item[0] + "</dt><dd>" + item[1] + "</dd>";
-}).join("");
-
-document.getElementById("profile").innerHTML =
-    "<h1>" + profile.name + "</h1>" +
-    '<p class="intro">' + profile.intro + "</p>" +
-    "<dl>" + detailsHtml + "</dl>";
-var nameElement = document.querySelector("h1");
-
-nameElement.addEventListener("click", function () {
-    var color = ["#76e4d2", "#b7fff1", "#8bb9c7"];
-    var randomIndex = Math.floor(Math.random() * color.length);
-    nameElement.style.color = color[randomIndex];
-});
 console.log("Three.js version", THREE.REVISION);
 var loader = new GLTFLoader();
 console.log("GLTFLoader initialized", loader);
@@ -45,7 +21,8 @@ var camera = new THREE.PerspectiveCamera(
     1000
 );
 
-camera.position.set(0, 1, 6);
+camera.position.set(0, 0, 6);
+camera.lookAt(0, 0, 0);
 
 // 4. 创建渲染器
 var renderer = new THREE.WebGLRenderer({
@@ -185,13 +162,13 @@ loader.load(
             dragon.position.copy(center).multiplyScalar(-scale);
         }
 
-        console.log("龙模型加载成功！");
+        console.log("Draco Loaded!");
     },
 
     undefined,
 
     function (error) {
-        console.error("模型加载失败：", error);
+        console.error("Failed!：", error);
     }
 );
 
@@ -268,7 +245,7 @@ var petMessage = document.getElementById("pet-message");
 feedButton.addEventListener("click", function () {
     var AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) {
-        petMessage.textContent = "你的浏览器不支持合成音频。";
+        petMessage.textContent = "Your browser not support the voice";
         return;
     }
 

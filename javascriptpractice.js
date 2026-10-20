@@ -149,6 +149,9 @@ for (var tuft = 0; tuft < 90; tuft++) {
 
 // 7. 异步加载 Draco 模型：文件读取完成后才会运行成功回调。
 var dragon;
+var dragonMixer;
+var dragonFeedAction;
+var animationClock = new THREE.Clock();
 
 // load 的参数依次为模型路径、成功回调、加载进度回调和失败回调。
 loader.load(
@@ -157,6 +160,14 @@ loader.load(
     function (gltf) {
         dragon = gltf.scene;
         scene.add(dragon);
+
+        // Draco 模型自带抬头、展翼和摆尾动画；保存为一次性动作供 Feed 按钮触发。
+        if (gltf.animations.length > 0) {
+            dragonMixer = new THREE.AnimationMixer(dragon);
+            dragonFeedAction = dragonMixer.clipAction(gltf.animations[0]);
+            dragonFeedAction.setLoop(THREE.LoopOnce, 1);
+            dragonFeedAction.clampWhenFinished = true;
+        }
 
         // 根据包围盒求模型中心和尺寸，再缩放到约 3 个场景单位并移到原点附近。
         var box = new THREE.Box3().setFromObject(dragon);
@@ -294,6 +305,12 @@ var dragonRoar = document.getElementById("dragon-roar");
 dragonRoar.volume = 0.8;
 
 feedButton.addEventListener("click", function () {
+    // 点击 Feed 时重置并播放模型动画，使动作与下面的龙吼同时开始。
+    if (dragonFeedAction) {
+        dragonFeedAction.reset();
+        dragonFeedAction.play();
+    }
+
     // 重复点击时从头播放，避免多段龙吼叠在一起。
     dragonRoar.pause();
     dragonRoar.currentTime = 0;
@@ -310,6 +327,8 @@ feedButton.addEventListener("click", function () {
 // 11. 每帧重新绘制场景；requestAnimationFrame 跟随浏览器刷新节奏运行。
 function animate() {
     requestAnimationFrame(animate);
+    // 每帧推进动画混合器，让 GLB 动画按真实经过时间播放。
+    if (dragonMixer) dragonMixer.update(animationClock.getDelta());
     renderer.render(scene, camera);
 }
 

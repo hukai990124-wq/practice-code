@@ -103,14 +103,44 @@ loader.load(
     }
 );
 
-// 7. 让龙自动旋转
+// 7. 鼠标拖动旋转龙模型
+var isDragging = false;
+var previousPointerX = 0;
+
+renderer.domElement.style.cursor = "grab";
+
+renderer.domElement.addEventListener("pointerdown", function (event) {
+    isDragging = true;
+    previousPointerX = event.clientX;
+    renderer.domElement.style.cursor = "grabbing";
+    renderer.domElement.setPointerCapture(event.pointerId);
+});
+
+renderer.domElement.addEventListener("pointermove", function (event) {
+    if (!isDragging || !dragon) return;
+
+    var deltaX = event.clientX - previousPointerX;
+    dragon.rotation.y += deltaX * 0.01;
+    previousPointerX = event.clientX;
+});
+
+renderer.domElement.addEventListener("pointerup", function (event) {
+    isDragging = false;
+    renderer.domElement.style.cursor = "grab";
+
+    if (renderer.domElement.hasPointerCapture(event.pointerId)) {
+        renderer.domElement.releasePointerCapture(event.pointerId);
+    }
+});
+
+renderer.domElement.addEventListener("pointercancel", function () {
+    isDragging = false;
+    renderer.domElement.style.cursor = "grab";
+});
+
+// 8. 持续渲染场景
 function animate() {
     requestAnimationFrame(animate);
-
-    if (dragon) {
-        dragon.rotation.y += 0.01;
-    }
-
     renderer.render(scene, camera);
 }
 

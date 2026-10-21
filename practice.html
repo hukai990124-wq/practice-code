@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Pet ﾂｷ Draco</title>
-    <!-- 蜉霓ｽ郤ｹ遶蠎ｧ蜿ｳ體ｭ菴ｿ逕ｨ逧・踏迚ｹ蟄嶺ｽ難ｼ悟ｹｶ蠑募・譛ｬ鬘ｵ譬ｷ蠑上・-->
+    <title>Web Pet · Draco</title>
+    <!-- 加载纹章座右铭使用的哥特字体，并引入本页样式。 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
@@ -21,27 +21,27 @@
     <script type="module" src="javascriptpractice.js"></script>
 </head>
 <body>
-    <!-- Contact Author蜈･蜿｣・夂せ蜃ｻ蜷主ｼｹ蜃ｺ菴懆・噪 GitHub 荳ｪ莠ｺ荳ｻ鬘ｵ體ｾ謗･縲・-->
+    <!-- Contact Author入口：点击后弹出作者的 GitHub 个人主页链接。 -->
     <button class="contact-author-trigger" id="contact-author-trigger" type="button"
         aria-haspopup="dialog" aria-controls="contact-author-dialog">Contact Author</button>
     <dialog class="contact-author-dialog" id="contact-author-dialog" aria-labelledby="contact-author-title">
         <div class="contact-author-dialog__header">
             <h2 id="contact-author-title">Contact Author</h2>
             <button class="contact-author-dialog__close" id="contact-author-close" type="button"
-                aria-label="Close contact window">ﾃ・/button>
+                aria-label="Close contact window">×</button>
         </div>
         <p>Find me on GitHub:</p>
         <a href="https://github.com/hukai990124-wq" target="_blank" rel="noopener noreferrer">
-            <!-- 蜀・ｵ・GitHub SVG 蝗ｾ譬・ｼ壽仞遉ｺ蜩∫煙譬・ｯ・ｼ梧裏髴鬚晏､門崟蜒乗枚莉ｶ縲・-->
+            <!-- 内嵌 GitHub SVG 图标：显示品牌标识，无需额外图像文件。 -->
             <svg class="contact-author-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path fill="currentColor" d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.56.1.76-.24.76-.54v-2.1c-3.1.67-3.76-1.32-3.76-1.32-.51-1.29-1.24-1.63-1.24-1.63-1.01-.69.08-.68.08-.68 1.12.08 1.71 1.15 1.71 1.15 1 .1.77 2.06 3.22 1.45.1-.72.39-1.21.71-1.49-2.47-.28-5.07-1.24-5.07-5.49 0-1.21.43-2.2 1.15-2.98-.12-.28-.5-1.41.11-2.94 0 0 .94-.3 3.05 1.14a10.6 10.6 0 0 1 5.55 0c2.11-1.44 3.04-1.14 3.04-1.14.61 1.53.23 2.66.12 2.94.71.78 1.14 1.77 1.14 2.98 0 4.26-2.6 5.2-5.08 5.48.4.35.76 1.02.76 2.06v3.05c0 .3.2.65.77.54A11.1 11.1 0 0 0 12 .9Z" />
             </svg>
             github.com/hukai990124-wq
         </a>
-        <!-- 譁ｰ蠅・LinkedIn 閨皮ｳｻ譁ｹ蠑擾ｼ壽婿萓ｿ隶ｿ螳｢莉主ｼｹ遯苓ｮｿ髣ｮ菴懆・噪閨御ｸ壻ｸｻ鬘ｵ縲・-->
+        <!-- 新增 LinkedIn 联系方式：方便访客从弹窗访问作者的职业主页。 -->
         <p>Connect with me on LinkedIn:</p>
         <a href="https://www.linkedin.com/in/kai-hu-5a4429366/" target="_blank" rel="noopener noreferrer">
-            <!-- 蜀・ｵ・LinkedIn SVG 蝗ｾ譬・ｼ壽仞遉ｺ蜩∫煙譬・ｯ・ｼ梧裏髴鬚晏､門崟蜒乗枚莉ｶ縲・-->
+            <!-- 内嵌 LinkedIn SVG 图标：显示品牌标识，无需额外图像文件。 -->
             <svg class="contact-author-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                 <path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.44-2.13 2.94v5.67H9.35V8.98h3.42v1.57h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.26 2.37 4.26 5.46v6.29ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12Zm1.78 13.02H3.56V8.98h3.56v11.47ZM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.44c.98 0 1.79-.77 1.79-1.72V1.72C24 .77 23.2 0 22.22 0Z" />
             </svg>
@@ -49,14 +49,14 @@
         </a>
     </dialog>
     <main>
-        <!-- 螳迚ｩ荳ｻ髱｢譚ｿ・壼桁蜷ｫ螳迚ｩ襍・侭縲・画叫謗ｧ莉ｶ縲・D 逕ｻ蟶・柱蝟る｣滓桃菴懊・-->
+        <!-- 宠物主面板：包含宠物资料、选择控件、3D 画布和喂食操作。 -->
         <section class="page-section pet-section" aria-labelledby="pet-title">
             <div class="pet-heading">
                 <div class="pet-title-group">
                     <p class="pet-kicker">INTERACTIVE COMPANION</p>
                     <h2 id="pet-title">Character</h2>
                 </div>
-                <!-- 隗定牡騾画叫蝎ｨ・咼raco 蜥・Sir.Gavin 蜈ｱ逕ｨ蜷御ｸ螟・3D 螻慕､ｺ蛹ｺ蝓溘・-->
+                <!-- 角色选择器：Draco 和 Sir.Gavin 共用同一处 3D 展示区域。 -->
                 <label class="pet-selector" for="pet-select">
                     <span>Choose Character</span>
                     <select id="pet-select" name="pet">
@@ -69,39 +69,39 @@
                     <div><dt id="pet-age-label">Type</dt><dd id="pet-age">Person</dd></div>
                 </dl>
             </div>
-            <!-- Three.js 莨壽滑 WebGL 逕ｻ蟶・薯蜈･霑吩ｸｪ螳ｹ蝎ｨ縲・-->
+            <!-- Three.js 会把 WebGL 画布插入这个容器。 -->
             <div id="pet"></div>
-            <p class="interaction-hint">Drag to rotate ﾂｷ Right-drag to move ﾂｷ Scroll to zoom</p>
-            <!-- 蝟る｣滓潔髓ｮ謦ｭ謾ｾ鬘ｹ逶ｮ荳ｭ逧・ｾ吝西髻ｳ鬚托ｼ帷憾諤∵枚蟄鈴夊ｿ・aria-live 騾夂衍霎・勧謚譛ｯ縲・-->
+            <p class="interaction-hint">Drag to rotate · Right-drag to move · Scroll to zoom</p>
+            <!-- 喂食按钮播放项目中的龙吼音频；状态文字通过 aria-live 通知辅助技术。 -->
             <div class="pet-footer">
-                <!-- 髻ｳ鬚第枚莉ｶ荳守ｽ鷹｡ｵ謾ｾ蝨ｨ蜷御ｸ逶ｮ蠖包ｼ御ｾｿ莠朱撕諤∵汚邂｡荳襍ｷ蜿大ｸ・・-->
+                <!-- 音频文件与网页放在同一目录，便于静态托管一起发布。 -->
                 <audio id="dragon-roar" src="./dragon-studio-epic-dragon-roar-364481.mp3" preload="auto"></audio>
-                <!-- 謚壽尊 Draco 蜉溯・・壼刈霓ｽ譁ｰ蜉蜈･逧・ｺ貞勘髻ｳ鬚台ｾ帶噛鞫ｸ謖蛾聴謦ｭ謾ｾ縲・-->
+                <!-- 抚摸 Draco 功能：加载新加入的互动音频供抚摸按钮播放。 -->
                 <audio id="dragon-pet-sound" src="./dragon-studio-dragon-roar-364478.mp3" preload="auto"></audio>
-                <!-- Shake hands隸ｭ髻ｳ・夂罰 Kokoro 逕ｷ螢ｰ讓｡蝙狗ｦｻ郤ｿ逕滓・・御ｽ應ｸｺ譎ｮ騾夐浹鬚第眺謾ｾ莉･驕ｿ蜈堺ｾ晁ｵ匁ｵ剰ｧ亥勣蝨ｨ郤ｿTTS縲・-->
+                <!-- Shake hands语音：由 Kokoro 男声模型离线生成，作为普通音频播放以避免依赖浏览器在线TTS。 -->
                 <audio id="sir-gavin-handshake-voice" src="./sir-gavin-handshake.wav" preload="auto"></audio>
                 <div class="pet-actions" id="draco-actions" hidden>
                     <button id="feed" type="button">Feed Draco</button>
                     <button id="pet-draco" type="button">Pet Draco</button>
                 </div>
-                <!-- Shake hands蜉溯・・壻ｻ・画叫 Sir.Gavin 譌ｶ譏ｾ遉ｺ謠｡謇倶ｺ貞勘謖蛾聴縲・-->
+                <!-- Shake hands功能：仅选择 Sir.Gavin 时显示握手互动按钮。 -->
                 <button id="shake-hands" type="button" disabled>Shake hands</button>
                 <p id="pet-message" aria-live="polite">Sir.Gavin is joining…</p>
             </div>
-            <!-- Read Text蜉溯・・夊ｮｩ隶ｿ螳｢霎灘・譁・ｭ暦ｼ悟ｹｶ逕ｱ Draco 逕ｨ霎・ｽ弱∬ｾ・・逧・TTS 螢ｰ髻ｳ譛苓ｯｻ縲・-->
+            <!-- Read Text功能：让访客输入文字，并由 Draco 用较低、较慢的 TTS 声音朗读。 -->
             <div class="read-text-panel" id="read-text-panel" hidden>
                 <label class="read-text-label" for="draco-text">Text for Draco to read</label>
                 <label class="read-text-language" for="draco-language">
                     <span>Language</span>
                     <select id="draco-language" name="language">
-                        <option value="zh-CN">荳ｭ譁・/option>
-                        <option value="ja-JP">譌･譛ｬ隱・/option>
+                        <option value="zh-CN">中文</option>
+                        <option value="ja-JP">日本語</option>
                         <option value="en-US" selected>English</option>
                     </select>
                 </label>
                 <div class="read-text-controls">
                     <textarea id="draco-text" rows="2" maxlength="500"
-                        placeholder="Type something for Draco to say窶ｦ"
+                        placeholder="Type something for Draco to say…"
                         aria-describedby="read-text-note"></textarea>
                     <button id="read-text" type="button">Read Text</button>
                     <button id="stop-reading" type="button">Stop</button>
@@ -121,9 +121,9 @@
             </section>
         </section>
     </main>
-    <!-- 鬘ｵ閼壼ｱ慕､ｺ荳ｪ莠ｺ郤ｹ遶蜥檎ｺｹ遶蠎ｧ蜿ｳ體ｭ縲・-->
+    <!-- 页脚展示个人纹章和纹章座右铭。 -->
     <footer class="site-footer">
-        <span>ﾂｩ 2026 @HuKai ﾂｷ 菫晉蕗謇譛画揀蛻ｩ</span>
+        <span>© 2026 @HuKai · 保留所有权利</span>
         <div class="personal-crest">
             <span class="footer-crest" aria-hidden="true">
                 <img class="personal-crest__image" src="./sigilHK.png" alt="">
